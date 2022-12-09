@@ -1,8 +1,10 @@
 import { useForm } from "react-hook-form";
+import useLocaleStorage from '../../common/hooks/useLocaleStorage';
 import { loginInfo } from "../../models";
 import axios from 'axios';
 
 const LoginComponent = () => {
+  const { user ,setUser} = useLocaleStorage<>();
   const {
     register,
     handleSubmit,
@@ -10,8 +12,10 @@ const LoginComponent = () => {
   } = useForm<loginInfo>();
 
   const onSubmitLogin = (data: loginInfo) => {
-    axios.post('http://localhost:8080/api/user/login', {"email": data.email, "password": data.password}).then((res) => {
-        console.log(res.data);
+    axios.post('http://localhost:8080/api/user/login', {"email": data.email, "password": data.password})
+    .then((res) => {
+        data = res.data;
+
     })
   };
 
