@@ -3,7 +3,7 @@ export interface loginInfo {
     password: string;
 }
 
-export interface user {
+export interface userInfo {
     id: null
     email: string;
     password: null;
@@ -13,5 +13,4 @@ export interface user {
     level: string;
     classroom: string;
     promotion: string;
-
 }
