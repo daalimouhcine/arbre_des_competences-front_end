@@ -1,22 +1,36 @@
 import { useForm } from "react-hook-form";
 import useLocaleStorage from '../../common/hooks/useLocaleStorage';
-import { loginInfo, userInfo } from "../../models";
+import { loginInfo } from "../../models";
 import axios from 'axios';
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const LoginComponent = () => {
-  const [user, setUser] = useLocaleStorage<userInfo>("user");
+  const [user, setUser] = useLocaleStorage<String>("user");
+  useEffect(() => {
+    if(user){
+      navigate("/");
+    }
+  }, []);
+  const [errorMessage, setErrorMessage] = useState<String>("");
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<loginInfo>();
+  const navigate = useNavigate();
 
   const onSubmitLogin = (data: loginInfo) => {
     axios.post('http://localhost:8080/api/user/login', {"email": data.email, "password": data.password})
     .then((res) => {
-      console.log("hello")
-        console.log(res.data);
-
+      console.log(res.data);
+      if(res.data.status === "401"){
+        setErrorMessage("Invalid email or password")
+       } else{
+         setErrorMessage("");
+         setUser(data.email);
+         navigate("/");
+       }
     })
   };
 
@@ -34,13 +48,8 @@ const LoginComponent = () => {
               <h2 className='mt-6 text-3xl font-extrabold text-gray-900'>
                 Sign in to your account
               </h2>
-              <p className='mt-2 text-sm text-gray-600'>
-                Or{" "}
-                <a
-                  href='_#'
-                  className='font-medium text-indigo-600 hover:text-indigo-500'>
-                  start your 14-day free trial
-                </a>
+              <p className='mt-2 w-full mx-auto text-md text-red-600 text-center'>
+                {errorMessage && errorMessage}
               </p>
             </div>
 
