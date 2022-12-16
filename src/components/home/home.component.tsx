@@ -1,6 +1,7 @@
 import { Fragment, useState, useEffect } from "react";
 import axios from "axios";
 import { Disclosure, Menu, Transition, Tab } from "@headlessui/react";
+import { referenceSkill } from "../../models";
 
 const user = {
   name: "Tom Cook",
@@ -26,15 +27,13 @@ function classNames(...classes: any) {
 }
 
 const HomeComponent = () => {
-    const [skills, setSkills] = useState([])
-    const [competences, setCompetences] = useState([])
+    const [skills, setSkills] = useState<Array<referenceSkill>>()
 
     useEffect(() => {
         axios.get("http://localhost:8080/api/skill/referenceSkills")
         .then(res => {
             console.log(res.data);
-            setSkills(res.data)
-            
+            setSkills(res.data);            
         })
     }, [])
     
@@ -204,7 +203,8 @@ const HomeComponent = () => {
           </Disclosure>
           <header className='py-10 w-full max-w-md mx-auto'>
               <Tab.List className='flex p-1 mx-auto  space-x-1 bg-gray-800 rounded-lg'>
-                <Tab
+                {skills?.map((skill: referenceSkill) => (
+                  <Tab
                   className={({ selected }) =>
                     classNames(
                       "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
@@ -214,32 +214,9 @@ const HomeComponent = () => {
                         : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
                     )
                   }>
-                  Tab 1
+                  {skill.shortname}
                 </Tab>
-                <Tab
-                  className={({ selected }) =>
-                    classNames(
-                      "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                      "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
-                      selected
-                        ? "bg-white shadow"
-                        : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
-                    )
-                  }>
-                  Tab 2
-                </Tab>
-                <Tab
-                  className={({ selected }) =>
-                    classNames(
-                      "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700",
-                      "ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2",
-                      selected
-                        ? "bg-white shadow"
-                        : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
-                    )
-                  }>
-                  Tab 3
-                </Tab>
+                ))}
               </Tab.List>
               
           </header>
@@ -251,15 +228,14 @@ const HomeComponent = () => {
             <div className='bg-white rounded-lg shadow px-5 py-6 sm:px-6'>
               <div className='border-4 border-dashed border-gray-200 rounded-lg h-96'>
                 <Tab.Panels>
-                    <Tab.Panel>
-                    <p>Tab 1 content</p>
+
+                  {skills?.map((skill: referenceSkill) => (
+                    <Tab.Panel key={skill.id}>
+                      {skill.name}
                     </Tab.Panel>
-                    <Tab.Panel>
-                    <p>Tab 2 content</p>
-                    </Tab.Panel>
-                    <Tab.Panel>
-                    <p>Tab 3 content</p>
-                    </Tab.Panel>
+                  ))}
+                      
+
                 </Tab.Panels>
                 
               </div>
