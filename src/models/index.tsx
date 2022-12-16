@@ -14,3 +14,9 @@ export interface userInfo {
     classroom: string;
     promotion: string;
 }
+
+export interface referenceSkill {
+    id: number;
+    name: string;
+    shortname: string;
+} 
